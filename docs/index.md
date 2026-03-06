@@ -1,5 +1,9 @@
 ---
 icon: lucide/rocket
+template: home.html
+hide:
+  - navigation
+  - toc
 ---
 
 # Get started
@@ -8,15 +12,29 @@ For full documentation visit [zensical.org](https://zensical.org/docs/).
 
 ## Commands
 
-* [`zensical new`][new] - Create a new project
-* [`zensical serve`][serve] - Start local web server
-* [`zensical build`][build] - Build your site
+<div class="grid cards" markdown>
+
+-   :lucide/plus-circle: __[`zensical new`][new]__
+
+    Create a new project from the default template.
+
+-   :lucide/server: __[`zensical serve`][serve]__
+
+    Start a local web server to preview your site.
+
+-   :lucide/wrench: __[`zensical build`][build]__
+
+    Build your site into a static set of files.
+
+</div>
 
   [new]: https://zensical.org/docs/usage/new/
   [serve]: https://zensical.org/docs/usage/preview/
   [build]: https://zensical.org/docs/usage/build/
 
 ## Examples
+
+<div class="grid" markdown>
 
 ### Admonitions
 
@@ -38,6 +56,8 @@ For full documentation visit [zensical.org](https://zensical.org/docs/).
     
     This content is hidden until you click to expand it.
     Great for FAQs or long explanations.
+
+</div>
 
 ## Code Blocks
 
