@@ -177,6 +177,14 @@
     
     <div class="md-container" data-md-component="container">
       
+  <section class="md-hero" style="background-color: var(--md-primary-fg-color); color: var(--md-primary-bg-color); padding: 4rem 1rem; text-align: center;">
+    <div class="md-hero__inner md-grid">
+      <h1 style="font-size: 2.5rem; margin-bottom: 1rem; font-weight: 700;">Adaptive systems for evolving ideas</h1>
+      <p style="font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.9;">Zensical creates scalable Open Source systems for technical writing that always keep you in the flow</p>
+      <a href="/markdown/" class="md-button md-button--primary" style="background-color: var(--md-primary-bg-color); color: var(--md-primary-fg-color); padding: 0.75rem 2rem; border-radius: 4px; font-weight: 700; text-decoration: none; display: inline-block;">Get started</a>
+    </div>
+  </section>
+
       
         
           
@@ -187,7 +195,9 @@
           
             
               
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -472,7 +482,9 @@
             
             
               
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -653,6 +665,8 @@
               
                 
 
+  
+
 
 
   
@@ -666,12 +680,24 @@
 <h1 id="get-started">Get started<a class="headerlink" href="#get-started" title="Permanent link">&para;</a></h1>
 <p>For full documentation visit <a href="https://zensical.org/docs/">zensical.org</a>.</p>
 <h2 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
 <ul>
-<li><a href="https://zensical.org/docs/usage/new/"><code>zensical new</code></a> - Create a new project</li>
-<li><a href="https://zensical.org/docs/usage/preview/"><code>zensical serve</code></a> - Start local web server</li>
-<li><a href="https://zensical.org/docs/usage/build/"><code>zensical build</code></a> - Build your site</li>
+<li>
+<p>:lucide/plus-circle: <strong><a href="https://zensical.org/docs/usage/new/"><code>zensical new</code></a></strong></p>
+<p>Create a new project from the default template.</p>
+</li>
+<li>
+<p>:lucide/server: <strong><a href="https://zensical.org/docs/usage/preview/"><code>zensical serve</code></a></strong></p>
+<p>Start a local web server to preview your site.</p>
+</li>
+<li>
+<p>:lucide/wrench: <strong><a href="https://zensical.org/docs/usage/build/"><code>zensical build</code></a></strong></p>
+<p>Build your site into a static set of files.</p>
+</li>
 </ul>
+</div>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<div class="grid">
 <h3 id="admonitions">Admonitions<a class="headerlink" href="#admonitions" title="Permanent link">&para;</a></h3>
 <blockquote>
 <p>Go to <a href="https://zensical.org/docs/authoring/admonitions/">documentation</a></p>
@@ -693,6 +719,7 @@
 <p>This content is hidden until you click to expand it.
 Great for FAQs or long explanations.</p>
 </details>
+</div>
 <h2 id="code-blocks">Code Blocks<a class="headerlink" href="#code-blocks" title="Permanent link">&para;</a></h2>
 <blockquote>
 <p>Go to <a href="https://zensical.org/docs/authoring/code-blocks/">documentation</a></p>
@@ -821,6 +848,8 @@ simple starter pages.</p>
 </ol>
 </div>
 
+  
+
 
 
 
@@ -834,6 +863,8 @@ simple starter pages.</p>
 
 
 
+
+  
 
 
 
@@ -858,6 +889,8 @@ simple starter pages.</p>
         <footer class="md-footer">
   
     
+      
+        
       
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
