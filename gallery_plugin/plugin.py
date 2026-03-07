@@ -98,41 +98,54 @@ class GalleryPlugin:
         """Generates Markdown files for each gallery in the docs directory."""
         self.galleries_dir.mkdir(parents=True, exist_ok=True)
         
+        # Phase 3.4: Cleanup orphaned files
+        existing_files = set(self.galleries_dir.glob("*.md"))
+        generated_files = set()
+        
         for gallery in galleries:
             # Create a safe filename from the gallery name
             safe_name = "".join(c if c.isalnum() else "_" for c in gallery["name"]).lower()
             file_path = self.galleries_dir / f"{safe_name}.md"
+            generated_files.add(file_path)
             
             content = self.render_gallery_markdown(gallery)
             with open(file_path, "w") as f:
                 f.write(content)
             print(f"Generated gallery file: {file_path}")
+            
+        # Delete files that were not generated in this run
+        for orphaned_file in existing_files - generated_files:
+            orphaned_file.unlink()
+            print(f"Deleted orphaned gallery file: {orphaned_file}")
 
     def render_gallery_markdown(self, gallery):
         """Renders the Markdown content for a single gallery."""
-        # We'll use frontmatter to store the gallery data and the default template will handle it
-        markdown = f"""---
-title: "{gallery['name']}"
-description: "{gallery['description']}"
-gallery_id: "{gallery['id']}"
-layout: "gallery"
-media:
-"""
+        # Phase 3.2: Map metadata to Markdown frontmatter
+        import yaml
+        
+        frontmatter = {
+            "title": gallery["name"],
+            "description": gallery["description"],
+            "gallery_id": gallery["id"],
+            "layout": "gallery",
+            "media": []
+        }
+        
         for item in gallery["media"]:
-            markdown += f"  - id: \"{item['id']}\"\n"
-            markdown += f"    name: \"{item['name']}\"\n"
-            markdown += f"    description: \"{item['description']}\"\n"
-            markdown += f"    mimeType: \"{item['mimeType']}\"\n"
-            markdown += f"    url: \"{item['webContentLink'] or item['webViewLink']}\"\n"
+            frontmatter["media"].append({
+                "id": item["id"],
+                "name": item["name"],
+                "description": item["description"],
+                "mimeType": item["mimeType"],
+                "url": item["webContentLink"] or item["webViewLink"]
+            })
             
-        markdown += f"""---
-
-# {gallery['name']}
-
-{gallery['description']}
-
-<!-- The actual gallery UI will be rendered by the 'gallery' layout/template -->
-"""
+        markdown = f"---\n{yaml.dump(frontmatter, sort_keys=False)}---\n\n"
+        markdown += f"# {gallery['name']}\n\n"
+        if gallery["description"]:
+            markdown += f"{gallery['description']}\n\n"
+            
+        markdown += "<!-- The actual gallery UI will be rendered by the 'gallery' layout/template -->\n"
         return markdown
 
 def main():
