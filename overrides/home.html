@@ -10,3 +10,15 @@
     </div>
   </section>
 {% endblock %}
+
+{% block content %}
+  {% if page.meta.reviews %}
+    <div class="zensical-home-reviews">
+      <h2 style="text-align: center; margin-top: 3rem;">What Our Users Say</h2>
+      {% set reviews = page.meta.reviews %}
+      {% include "partials/reviews_slider.html" %}
+    </div>
+  {% endif %}
+
+  {{ super() }}
+{% endblock %}

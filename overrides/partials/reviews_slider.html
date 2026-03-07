@@ -1,0 +1,123 @@
+<style>
+  .zensical-reviews-slider-container {
+    position: relative;
+    max-width: 800px;
+    margin: 2rem auto;
+    overflow: hidden;
+    padding: 0 40px;
+  }
+  .zensical-reviews-slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+  .zensical-reviews-slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+  }
+  .zensical-slider-card {
+    background: var(--md-card-bg-color, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--md-default-fg-color--lightest);
+  }
+  .zensical-slider-author-photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    object-fit: cover;
+    display: block;
+    background: #eee;
+  }
+  .zensical-slider-author-name {
+    font-weight: bold;
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+  }
+  .zensical-slider-rating {
+    color: #fbbc04;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .zensical-slider-text {
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--md-default-fg-color);
+  }
+  .zensical-slider-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--md-primary-fg-color);
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  .zensical-slider-nav:hover {
+    opacity: 1;
+  }
+  .zensical-slider-prev { left: 0; }
+  .zensical-slider-next { right: 0; }
+</style>
+
+<div class="zensical-reviews-slider-container" id="reviewsSlider">
+  <button class="zensical-slider-nav zensical-slider-prev" onclick="moveSlide(-1)">&#10094;</button>
+  <div class="zensical-reviews-slider">
+    {% for review in reviews %}
+      <div class="zensical-reviews-slide">
+        <div class="zensical-slider-card">
+          {% if review.photo_uri %}
+            <img class="zensical-slider-author-photo" src="{{ review.photo_uri }}" alt="{{ review.author }}">
+          {% else %}
+             <div class="zensical-slider-author-photo" style="display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--md-primary-fg-color--light);">
+              {{ review.author[0] }}
+            </div>
+          {% endif %}
+          <div class="zensical-slider-author-name">{{ review.author }}</div>
+          <div class="zensical-slider-rating">
+            {% set rating = review.rating | float %}
+            {% for i in range(rating | int) %}★{% endfor %}{% if rating % 1 >= 0.5 %}½{% endif %}
+          </div>
+          <div class="zensical-slider-text">
+            "{{ review.text }}"
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <button class="zensical-slider-nav zensical-slider-next" onclick="moveSlide(1)">&#10095;</button>
+</div>
+
+<script>
+  let currentSlide = 0;
+  function moveSlide(direction) {
+    const slider = document.querySelector('.zensical-reviews-slider');
+    const slides = document.querySelectorAll('.zensical-reviews-slide');
+    const totalSlides = slides.length;
+    
+    currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+  }
+  
+  // Auto-play
+  let autoPlayInterval = setInterval(() => moveSlide(1), 5000);
+  
+  // Pause on hover
+  const sliderContainer = document.getElementById('reviewsSlider');
+  sliderContainer.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+  sliderContainer.addEventListener('mouseleave', () => {
+    autoPlayInterval = setInterval(() => moveSlide(1), 5000);
+  });
+</script>
