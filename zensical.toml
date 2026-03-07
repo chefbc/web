@@ -304,4 +304,11 @@ toggle.name = "Switch to light mode"
 #icon = "fontawesome/brands/github"
 #link = "https://github.com/user/repo"
 
+# ----------------------------------------------------------------------------
+# Gallery Plugin configuration
+# ----------------------------------------------------------------------------
+[plugins.gallery]
+root_folder_id = "YOUR_GOOGLE_DRIVE_FOLDER_ID"
+credentials_path = "credentials.json"
+
 
