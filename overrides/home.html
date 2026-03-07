@@ -15,7 +15,8 @@
   {% if page.meta.reviews %}
     <div class="zensical-home-reviews">
       <h2 style="text-align: center; margin-top: 3rem;">What Our Users Say</h2>
-      {% include "partials/reviews_slider.html" with reviews=page.meta.reviews %}
+      {% set reviews = page.meta.reviews %}
+      {% include "partials/reviews_slider.html" %}
     </div>
   {% endif %}
 

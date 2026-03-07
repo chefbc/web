@@ -96,8 +96,8 @@
           </div>
         </div>
         <div class="zensical-review-rating">
-          {% set rating = review.rating | int %}
-          {% for i in range(rating) %}★{% endfor %}{% if review.rating % 1 >= 0.5 %}½{% endif %}
+          {% set rating = review.rating | float %}
+          {% for i in range(rating | int) %}★{% endfor %}{% if rating % 1 >= 0.5 %}½{% endif %}
         </div>
         <div class="zensical-review-text">
           "{{ review.text }}"

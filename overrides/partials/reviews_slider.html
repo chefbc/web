@@ -87,11 +87,11 @@
           {% endif %}
           <div class="zensical-slider-author-name">{{ review.author }}</div>
           <div class="zensical-slider-rating">
-            {% set rating = review.rating | int %}
-            {% for i in range(rating) %}★{% endfor %}{% if review.rating % 1 >= 0.5 %}½{% endif %}
+            {% set rating = review.rating | float %}
+            {% for i in range(rating | int) %}★{% endfor %}{% if rating % 1 >= 0.5 %}½{% endif %}
           </div>
           <div class="zensical-slider-text">
-            "{{ review.text | truncate(200) }}"
+            "{{ review.text }}"
           </div>
         </div>
       </div>

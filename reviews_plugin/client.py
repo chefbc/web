@@ -44,13 +44,13 @@ class GooglePlacesClient:
                 # Format the review for Zensical frontmatter
                 attribution = r.get("authorAttribution", {})
                 filtered.append({
-                    "author": attribution.get("displayName"),
-                    "author_uri": attribution.get("uri"),
-                    "photo_uri": attribution.get("photoUri"),
-                    "rating": rating,
-                    "text": text_content,
-                    "relative_time": r.get("relativePublishTimeDescription"),
-                    "publish_time": r.get("publishTime")
+                    "author": str(attribution.get("displayName") or ""),
+                    "author_uri": str(attribution.get("uri") or ""),
+                    "photo_uri": str(attribution.get("photoUri") or ""),
+                    "rating": str(rating),
+                    "text": str(text_content),
+                    "relative_time": str(r.get("relativePublishTimeDescription") or ""),
+                    "publish_time": str(r.get("publishTime") or "")
                 })
 
         # Return only the top reviews up to max_count
