@@ -1,6 +1,6 @@
 ---
 title: Contact Us
-layout: form
+template: form.html
 form_config:
   webhook_url: https://hooks.zapier.com/hooks/catch/12345/abcde
   on_success:

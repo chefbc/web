@@ -67,7 +67,7 @@ class FormPlugin:
         # Map configuration to Markdown frontmatter
         frontmatter = {
             "title": form.get("title", "Form"),
-            "layout": "form",
+            "template": "form.html",
             "form_config": {
                 "webhook_url": form.get("webhook_url"),
                 "on_success": form.get("on_success", {"type": "message", "value": "Thank you for your submission!"}),

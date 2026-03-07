@@ -1,0 +1,170 @@
+{% extends "main.html" %}
+
+{% block extrahead %}
+  {% if page.meta.form_config.recaptcha_site_key %}
+    <script src="https://www.google.com/recaptcha/api.js?render={{ page.meta.form_config.recaptcha_site_key }}"></script>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <style>
+    .zensical-form {
+      max-width: 600px;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      border: 1px solid var(--md-typeset-table-color, #eee);
+      border-radius: 8px;
+      background: var(--md-card-bg-color, #fff);
+    }
+    .zensical-form-group {
+      margin-bottom: 1.25rem;
+    }
+    .zensical-form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .zensical-form-control {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid var(--md-typeset-table-color, #ccc);
+      border-radius: 4px;
+      font-size: 1rem;
+      background: var(--md-default-bg-color);
+      color: var(--md-default-fg-color);
+    }
+    .zensical-form-control:focus {
+      border-color: var(--md-primary-fg-color);
+      outline: none;
+      box-shadow: 0 0 0 2px var(--md-primary-fg-color--transparent);
+    }
+    .zensical-form-submit {
+      background-color: var(--md-primary-fg-color);
+      color: var(--md-primary-bg-color);
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .zensical-form-submit:hover {
+      opacity: 0.9;
+    }
+    .zensical-form-message {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 4px;
+      display: none;
+    }
+    .zensical-form-message.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+    .zensical-form-message.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+    /* Honeypot hidden field */
+    .zensical-form-hp {
+      display: none !important;
+      visibility: hidden !important;
+    }
+  </style>
+
+  <h1>{{ page.title }}</h1>
+  {% if page.meta.form_config.description %}
+    <p>{{ page.meta.form_config.description }}</p>
+  {% endif %}
+
+  <div class="zensical-form-container">
+    <form id="zensical-form-default" 
+          class="zensical-form" 
+          action="{{ page.meta.form_config.webhook_url }}" 
+          method="POST" 
+          enctype="multipart/form-data"
+          data-on-success='{{ page.meta.form_config.on_success | tojson | safe }}'
+          data-recaptcha-site-key="{{ page.meta.form_config.recaptcha_site_key }}">
+      
+      {% for field in page.meta.form_config.fields %}
+        <div class="zensical-form-group">
+          {% if field.type != 'hidden' %}
+            <label class="zensical-form-label" for="field-{{ field.name }}">
+              {{ field.label or field.name.capitalize() }}
+              {% if field.required %}<span style="color: red;">*</span>{% endif %}
+            </label>
+          {% endif %}
+
+          {% if field.type == 'textarea' %}
+            <textarea id="field-{{ field.name }}" 
+                      name="{{ field.name }}" 
+                      class="zensical-form-control" 
+                      placeholder="{{ field.placeholder or '' }}"
+                      {% if field.required %}required{% endif %}></textarea>
+          
+          {% elif field.type == 'select' %}
+            <select id="field-{{ field.name }}" 
+                    name="{{ field.name }}" 
+                    class="zensical-form-control"
+                    {% if field.required %}required{% endif %}>
+              <option value="" disabled selected>{{ field.placeholder or 'Select an option' }}</option>
+              {% for option in field.options %}
+                <option value="{{ option.value }}">{{ option.label }}</option>
+              {% endfor %}
+            </select>
+
+          {% elif field.type == 'file' %}
+            <input type="file" 
+                   id="field-{{ field.name }}" 
+                   name="{{ field.name }}" 
+                   class="zensical-form-control"
+                   {% if field.allowed_extensions %}accept="{{ field.allowed_extensions | join(',') }}"{% endif %}
+                   data-max-size="{{ field.max_size or 5 }}"
+                   {% if field.required %}required{% endif %}>
+
+          {% elif field.type == 'checkbox' %}
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox" 
+                     id="field-{{ field.name }}" 
+                     name="{{ field.name }}" 
+                     {% if field.required %}required{% endif %}>
+              <span>{{ field.placeholder or '' }}</span>
+            </div>
+
+          {% elif field.type == 'hidden' %}
+            <input type="hidden" name="{{ field.name }}" value="{{ field.value or '' }}">
+
+          {% else %}
+            <input type="{{ field.type or 'text' }}" 
+                   id="field-{{ field.name }}" 
+                   name="{{ field.name }}" 
+                   class="zensical-form-control" 
+                   placeholder="{{ field.placeholder or '' }}"
+                   {% if field.required %}required{% endif %}>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <!-- Honeypot -->
+      <div class="zensical-form-hp">
+        <label for="zensical_hp_field">Do not fill this field</label>
+        <input type="text" name="zensical_hp_field" id="zensical_hp_field">
+      </div>
+
+      <!-- reCAPTCHA v3 token will be injected here -->
+      <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+
+      <button type="submit" class="zensical-form-submit">Submit</button>
+    </form>
+    
+    <div id="zensical-form-message-default" class="zensical-form-message"></div>
+  </div>
+
+  <script src="{{ 'assets/javascripts/form_submission.js' | url }}"></script>
+
+  {{ super() }}
+{% endblock %}
