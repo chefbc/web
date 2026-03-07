@@ -1,28 +1,28 @@
-# CHE-8: Update the Homepage Walkthrough
+# Walkthrough: Gallery Plugin (CHE-15)
 
-## Narrative Summary
+## Summary
 
-**The Problem**
-The project's homepage was a standard documentation page that lacked a professional "landing page" feel. It didn't effectively highlight the project's value proposition or provide a clear path for new users to get started, especially compared to the reference site, `zensical.org`.
+### The Problem
+Zensical users needed a way to automate the creation of image and video galleries without manually uploading files or writing individual Markdown pages. The goal was to source content directly from Google Drive, where folders represent galleries and files within those folders (images and videos) are automatically rendered.
 
-**The Solution**
-To address this, I implemented a custom hero section using Zensical's template override system and restructured the homepage content into more visual components. By leveraging the `home.html` template and frontmatter configurations, I created a layout that mimics the high-quality aesthetics of the reference site while preserving all existing documentation content.
+### The Solution
+We implemented a robust Gallery Plugin that integrates with the Google Drive API. At build time, the plugin scans a specified root folder, identifies subfolders as individual galleries, and extracts media metadata (including descriptions for captions). It then generates Zensical-compatible Markdown files with rich YAML frontmatter, which are rendered using a dedicated, responsive gallery template.
 
-**Key Changes**
-- **Hero Section**: Added a bold hero section in `overrides/home.html` featuring a primary "Get started" call-to-action and a secondary "Learn more" link.
-- **Content Layout**: Transformed the "Commands" list into a responsive feature grid using `grid cards` and reorganized the "Examples" section into a structured 2-column layout.
-- **Configuration**: Updated `zensical.toml` to enable custom template overrides and adjusted `docs/index.md` frontmatter to hide standard navigation elements, ensuring the hero section takes center stage on the homepage.
+### Key Changes
+- **Core Plugin Logic:** A new `gallery_plugin/` package handles authenticated API requests, recursive discovery, and local metadata caching for performance.
+- **Dynamic Generation:** A synchronization script converts Google Drive structures into a structured `docs/galleries/` hierarchy.
+- **Responsive UI:** A custom Jinja2 template in `overrides/gallery.html` provides a modern grid layout with support for images (`.png`, `.jpg`) and HTML5 video playback (`.mp4`).
+- **Developer Flexibility:** The system fully supports Zensical's override mechanism, allowing developers to easily customize the gallery UI.
 
 ## 🎬 Visual Storyboard
 
+### Walkthrough Animation
 ![Walkthrough GIF](./walkthrough.gif)
 
-1. **Hero Section**: The top of the homepage now features a professional hero section with a clear value proposition and primary/secondary call-to-action buttons.
+### 1. Nature Gallery
+Successfully generated from Google Drive folder "Nature". Shows responsive grid with mixed media and captions.
+![Nature Gallery](./walkthrough/01_nature_gallery.png)
 
-   ![Hero Section](./walkthrough/01_hero_section.png)
-
-2. **Commands Grid**: The standard list of CLI commands has been restructured into a responsive feature grid with clear icons and descriptions.
-   ![Commands Grid](./walkthrough/02_commands_grid.png)
-
-3. **Examples Grid**: Existing documentation examples (Admonitions and Details) are now organized into a clean, 2-column grid layout for better information density.
-   ![Examples Grid](./walkthrough/03_examples_grid.png)
+### 2. Travel Gallery
+Successfully generated from Google Drive folder "Travel". Demonstrates automatic title and metadata extraction.
+![Travel Gallery](./walkthrough/02_travel_gallery.png)
