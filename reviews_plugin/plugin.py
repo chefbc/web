@@ -2,17 +2,23 @@ import os
 import json
 import yaml
 from pathlib import Path
+from .client import GooglePlacesClient, ReviewCache
 
 class ReviewsPlugin:
     def __init__(self, config=None):
         self.config = config or {}
         self.place_id = self.config.get("place_id")
         self.max_reviews = self.config.get("max_reviews", 5)
-        self.min_rating_filter = self.config.get("min_rating_filter", 4.0)
+        self.min_rating_filter = float(self.config.get("min_rating_filter", 4.0))
         self.cache_expiry = self.config.get("cache_expiry", 24) # in hours
         self.docs_dir = Path(self.config.get("docs_dir", "docs"))
         self.cache_path = Path(".cache/reviews_metadata.json")
         self.reviews_file = self.docs_dir / "reviews.md"
+        
+        # Load API key from environment
+        self.api_key = os.getenv("GOOGLE_MAPS_API_KEY")
+        self.client = GooglePlacesClient(self.api_key, self.place_id)
+        self.cache = ReviewCache(self.cache_path, self.cache_expiry)
 
     def run(self, force_refresh=False):
         """Main execution flow for the plugin."""
@@ -21,10 +27,54 @@ class ReviewsPlugin:
             return
 
         reviews = None
-        # Phase 2: Implementation of caching and API client will go here
+        if not force_refresh:
+            reviews = self.cache.get()
+            if reviews:
+                print("ReviewsPlugin: Loaded reviews from cache.")
+
+        if not reviews:
+            print(f"ReviewsPlugin: Syncing reviews from Google for place_id: {self.place_id}")
+            if not self.api_key:
+                print("Warning: GOOGLE_MAPS_API_KEY not set. Skipping review sync.")
+                return
+
+            # Phase 2: Implementation of API client
+            raw_reviews = self.client.fetch_reviews()
+            reviews = self.client.filter_reviews(
+                raw_reviews, 
+                min_rating=self.min_rating_filter, 
+                max_count=self.max_reviews
+            )
+            
+            # Phase 2.3: Caching
+            self.cache.set(reviews)
         
-        # Phase 3: Implementation of file generation will go here
-        print(f"ReviewsPlugin: Initialized with place_id={self.place_id}")
+        # Phase 3: Generation
+        self.generate_files(reviews)
+
+    def generate_files(self, reviews):
+        """Generates the reviews.md file in the docs directory."""
+        if not reviews:
+            print("ReviewsPlugin: No reviews found or filtered. Skipping file generation.")
+            return
+
+        self.docs_dir.mkdir(parents=True, exist_ok=True)
+        
+        frontmatter = {
+            "title": "Reviews",
+            "description": "What our customers are saying about us on Google.",
+            "layout": "reviews",
+            "reviews": reviews
+        }
+        
+        content = f"---\n{yaml.dump(frontmatter, sort_keys=False)}---\n\n"
+        content += "# Customer Reviews\n\n"
+        content += "We are proud of our customer feedback! Here are some of our latest reviews from Google.\n"
+        
+        with open(self.reviews_file, "w") as f:
+            f.write(content)
+        
+        print(f"ReviewsPlugin: Generated reviews file: {self.reviews_file}")
 
 def main():
     try:
