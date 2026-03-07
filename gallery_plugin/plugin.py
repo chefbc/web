@@ -15,20 +15,34 @@ class GalleryPlugin:
             token_path=self.config.get("token_path", ".cache/token.pickle")
         )
 
-    def run(self):
+    def load_cache(self):
+        """Loads metadata from the local cache file."""
+        if self.cache_path.exists():
+            with open(self.cache_path, "r") as f:
+                return json.load(f)
+        return None
+
+    def run(self, force_refresh=False):
         """Main execution flow for the plugin."""
         if not self.root_folder_id:
             print("Warning: root_folder_id not configured for GalleryPlugin.")
             return
 
-        print(f"Syncing galleries from root folder ID: {self.root_folder_id}")
-        self.drive_client.authenticate()
-        
-        # Phase 2: Discovery
-        galleries = self.discover_galleries()
-        
-        # Phase 2.3: Caching
-        self.save_cache(galleries)
+        galleries = None
+        if not force_refresh:
+            galleries = self.load_cache()
+            if galleries:
+                print("Loaded galleries from cache.")
+
+        if not galleries:
+            print(f"Syncing galleries from root folder ID: {self.root_folder_id}")
+            self.drive_client.authenticate()
+            
+            # Phase 2: Discovery
+            galleries = self.discover_galleries()
+            
+            # Phase 2.3: Caching
+            self.save_cache(galleries)
         
         # Phase 3: Generation
         self.generate_files(galleries)
@@ -121,11 +135,31 @@ media:
 """
         return markdown
 
-if __name__ == "__main__":
-    # For local testing or standalone use
-    # Load config from environment or dummy for now
-    plugin = GalleryPlugin({
-        "root_folder_id": os.environ.get("GALLERY_ROOT_ID"),
-        "docs_dir": "docs"
-    })
+def main():
+    try:
+        import tomllib
+    except ImportError:
+        import tomli as tomllib
+
+    # Load config from zensical.toml
+    config_path = Path("zensical.toml")
+    if not config_path.exists():
+        print("zensical.toml not found.")
+        return
+
+    with open(config_path, "rb") as f:
+        full_config = tomllib.load(f)
+    
+    # Extract gallery plugin config
+    # Zensical config structure: [plugins.gallery]
+    plugin_config = full_config.get("plugins", {}).get("gallery", {})
+    
+    # We also need docs_dir from project config
+    project_config = full_config.get("project", {})
+    plugin_config["docs_dir"] = project_config.get("docs_dir", "docs")
+
+    plugin = GalleryPlugin(plugin_config)
     plugin.run()
+
+if __name__ == "__main__":
+    main()

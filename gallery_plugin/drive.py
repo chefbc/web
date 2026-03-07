@@ -46,15 +46,35 @@ class DriveClient:
         self.service = build("drive", "v3", credentials=creds)
 
     def list_folders(self, parent_id):
+        folders = []
+        page_token = None
         query = f"'{parent_id}' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
-        results = self.service.files().list(
-            q=query, fields="files(id, name, description)"
-        ).execute()
-        return results.get("files", [])
+        
+        while True:
+            results = self.service.files().list(
+                q=query, 
+                fields="nextPageToken, files(id, name, description)",
+                pageToken=page_token
+            ).execute()
+            folders.extend(results.get("files", []))
+            page_token = results.get("nextPageToken")
+            if not page_token:
+                break
+        return folders
 
     def list_files(self, folder_id):
+        files = []
+        page_token = None
         query = f"'{folder_id}' in parents and trashed = false"
-        results = self.service.files().list(
-            q=query, fields="files(id, name, description, mimeType, webContentLink, webViewLink)"
-        ).execute()
-        return results.get("files", [])
+        
+        while True:
+            results = self.service.files().list(
+                q=query, 
+                fields="nextPageToken, files(id, name, description, mimeType, webContentLink, webViewLink)",
+                pageToken=page_token
+            ).execute()
+            files.extend(results.get("files", []))
+            page_token = results.get("nextPageToken")
+            if not page_token:
+                break
+        return files
