@@ -1,28 +1,32 @@
-# Walkthrough: Gallery Plugin (CHE-15)
+# Walkthrough - Form Plugin (CHE-17)
 
-## Summary
+## Narrative Summary
 
 ### The Problem
-Zensical users needed a way to automate the creation of image and video galleries without manually uploading files or writing individual Markdown pages. The goal was to source content directly from Google Drive, where folders represent galleries and files within those folders (images and videos) are automatically rendered.
+The goal was to create a flexible, YAML-configurable form plugin for Zensical/MkDocs. Previously, adding forms required manual HTML/JS work for each page. There was also a need for built-in security features like reCAPTCHA v3 and Honeypot fields to prevent SPAM.
 
 ### The Solution
-We implemented a robust Gallery Plugin that integrates with the Google Drive API. At build time, the plugin scans a specified root folder, identifies subfolders as individual galleries, and extracts media metadata (including descriptions for captions). It then generates Zensical-compatible Markdown files with rich YAML frontmatter, which are rendered using a dedicated, responsive gallery template.
+We implemented a `form_plugin` that follows the existing "Generator" pattern in the project. It automatically scans a `forms/` directory for YAML configurations and generates corresponding Markdown pages. A custom Jinja2 template (`overrides/form.html`) provides a clean, responsive UI, while a dedicated JavaScript handler (`form_submission.js`) manages AJAX submissions to any external webhook.
 
 ### Key Changes
-- **Core Plugin Logic:** A new `gallery_plugin/` package handles authenticated API requests, recursive discovery, and local metadata caching for performance.
-- **Dynamic Generation:** A synchronization script converts Google Drive structures into a structured `docs/galleries/` hierarchy.
-- **Responsive UI:** A custom Jinja2 template in `overrides/gallery.html` provides a modern grid layout with support for images (`.png`, `.jpg`) and HTML5 video playback (`.mp4`).
-- **Developer Flexibility:** The system fully supports Zensical's override mechanism, allowing developers to easily customize the gallery UI.
+- **Plugin Logic**: Created `form_plugin/plugin.py` to bridge YAML configs with MkDocs pages.
+- **Dynamic UI**: Developed an overridable Jinja2 template that supports various field types (text, email, select, textarea, file).
+- **Security**: Integrated reCAPTCHA v3 and a hidden Honeypot field directly into the form structure.
+- **Robust Submission**: Added client-side validation for file sizes and extensions before the data is sent to the webhook.
 
 ## 🎬 Visual Storyboard
 
-### Walkthrough Animation
+### Summary Animation
 ![Walkthrough GIF](./walkthrough.gif)
 
-### 1. Nature Gallery
-Successfully generated from Google Drive folder "Nature". Shows responsive grid with mixed media and captions.
-![Nature Gallery](./walkthrough/01_nature_gallery.png)
+### 1. Form Overview
+The form is rendered with a clean, modern layout that fits the site's theme. All fields defined in YAML are automatically generated with proper labels and validation.
+![Form Overview](./walkthrough/01_form_overview.png)
 
-### 2. Travel Gallery
-Successfully generated from Google Drive folder "Travel". Demonstrates automatic title and metadata extraction.
-![Travel Gallery](./walkthrough/02_travel_gallery.png)
+### 2. File Uploads & Security
+The bottom section of the form includes a "Your Message" area, a file upload input with extension filtering, and the secure "Submit" button.
+![Submit Section](./walkthrough/02_form_submit_section.png)
+
+### 3. Interactive State
+Users get immediate feedback as they fill out the form. The "Submit" button triggers the reCAPTCHA token generation and AJAX submission flow.
+![Filled Form](./walkthrough/03_form_filled.png)
