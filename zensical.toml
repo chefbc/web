@@ -311,4 +311,13 @@ toggle.name = "Switch to light mode"
 root_folder_id = "YOUR_GOOGLE_DRIVE_FOLDER_ID"
 credentials_path = "credentials.json"
 
+# ----------------------------------------------------------------------------
+# Reviews Plugin configuration
+# ----------------------------------------------------------------------------
+[plugins.reviews]
+place_id = "ChIJ5WO-o53_BIgRt-iSWeAY-lw"
+max_reviews = 5
+min_rating_filter = 4.0
+cache_expiry = 24
+
 
