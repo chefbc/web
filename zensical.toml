@@ -327,3 +327,9 @@ cache_expiry = 24
 # ----------------------------------------------------------------------------
 [plugins.form]
 forms_dir = "forms"
+
+# ----------------------------------------------------------------------------
+# Announcements Plugin configuration
+# ----------------------------------------------------------------------------
+[plugins.announcements]
+announcements_file = "announcements.yaml"
