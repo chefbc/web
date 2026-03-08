@@ -7,6 +7,9 @@
 # ============================================================================
 
 [project]
+markdown_extensions = [
+    "business_plugin.plugin:BusinessExtension"
+]
 
 # The site_name is shown in the page header and the browser window title
 #
@@ -333,3 +336,10 @@ forms_dir = "forms"
 # ----------------------------------------------------------------------------
 [plugins.announcements]
 announcements_file = "announcements.yaml"
+
+# ----------------------------------------------------------------------------
+# Business Plugin configuration
+# ----------------------------------------------------------------------------
+[plugins.business]
+inject_schema = true
+
