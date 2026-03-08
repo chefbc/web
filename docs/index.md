@@ -199,3 +199,4 @@ $$
 [Hover me][example]
 
   [example]: https://example.com "I'm a tooltip!"
+\n## Business Details\n\nYou can display business information using the `business` shortcode.\n\n- **Name:** {% business 'name' %}\n- **Phone:** {% business 'phone' %}\n- **Email:** {% business 'email' %}\n- **Address:** {% business 'address' %}\n\n### Hours\n\n{% business 'hours' %}\n\n### Branch Location\n\n- **Name:** {% business 'branch_office' 'name' %}\n- **Phone:** {% business 'branch_office' 'phone' %}\n\n### Location Map\n\n{% business 'map' %}
