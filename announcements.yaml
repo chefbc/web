@@ -1,0 +1,8 @@
+- text: "Welcome to the new site!"
+  color: "#ff0000"
+  start_date: "2026-03-01"
+  end_date: "2026-03-10"
+- html: "<strong>Big sale!</strong> Limited time only."
+  color: "#00ff00"
+  start_date: "2026-03-05"
+  end_date: "2026-03-15"
