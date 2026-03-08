@@ -3,9 +3,13 @@
         const bar = document.getElementById('announcement-bar');
         if (!bar) return;
 
+        // Check if user has dismissed announcements
+        if (localStorage.getItem('announcements-dismissed')) {
+            return;
+        }
+
         try {
             // Find the correct base path for the JSON file
-            // Since this script is loaded via base_url, we can try to derive the path
             const scriptTag = document.querySelector('script[src*="announcements.js"]');
             const basePath = scriptTag.src.replace('assets/javascripts/announcements.js', '');
             
@@ -14,14 +18,11 @@
 
             const announcements = await response.json();
             const now = new Date();
-            // Get today's date in YYYY-MM-DD format for easier comparison if dates are just strings
             const todayStr = now.toISOString().split('T')[0];
 
             const activeAnnouncements = announcements.filter(ann => {
                 const start = ann.start_date || '0000-00-00';
                 const end = ann.end_date || '9999-99-99';
-                
-                // Simple string comparison for ISO dates
                 return todayStr >= start && todayStr <= end;
             });
 
@@ -47,6 +48,15 @@
                 });
 
                 bar.style.display = 'block';
+
+                // Add dismissal listener
+                const dismissBtn = bar.querySelector('.announcement-dismiss');
+                if (dismissBtn) {
+                    dismissBtn.addEventListener('click', () => {
+                        bar.style.display = 'none';
+                        localStorage.setItem('announcements-dismissed', 'true');
+                    });
+                }
             } else {
                 bar.style.display = 'none';
             }
@@ -55,7 +65,6 @@
         }
     }
 
-    // Wait for DOM to be ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initAnnouncements);
     } else {

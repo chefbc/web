@@ -1,5 +1,9 @@
 {% extends "main.html" %}
 
+{% block announce %}
+  {% include "partials/announcement.html" %}
+{% endblock %}
+
 {% block hero %}
   <section class="md-hero" style="background-color: var(--md-primary-fg-color); color: var(--md-primary-bg-color); padding: 4rem 1rem; text-align: center;">
     <div class="md-hero__inner md-grid">

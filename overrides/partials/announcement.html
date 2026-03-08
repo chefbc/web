@@ -2,16 +2,34 @@
 #announcement-bar {
     width: 100%;
     z-index: 100;
+    position: relative;
 }
 .announcement-item {
     padding: 8px 16px;
     text-align: center;
     color: #fff;
     font-weight: 500;
+    position: relative;
+}
+.announcement-dismiss {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 20px;
+    opacity: 0.7;
+}
+.announcement-dismiss:hover {
+    opacity: 1;
 }
 </style>
 <div id="announcement-bar" style="display:none;">
     <div class="announcement-content"></div>
+    <button class="announcement-dismiss" aria-label="Dismiss">&times;</button>
 </div>
 
 <script src="{{ base_url }}assets/javascripts/announcements.js"></script>
